@@ -1,0 +1,10 @@
+name: keepalive
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS "${{ secrets.SUPABASE_URL }}/rest/v1/halls?select=id" -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" > /dev/null
