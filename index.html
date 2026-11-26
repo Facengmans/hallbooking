@@ -197,6 +197,7 @@ if(act(b)&&b.st!="ok"){a+=(b.proof?'<button class="btn s g" data-do="v" data-id=
 if(!dean&&b.st!="c")a+='<button class="btn s" data-do="c" data-id="'+b.code+'"'+(ok2?'':' disabled')+'>موافقة المركز</button>';
 if(dean)a+='<button class="btn s" data-do="ok" data-id="'+b.code+'"'+(ok2?'':' disabled')+'>اعتماد نهائي</button>';
 a+='<button class="btn s d" data-do="x" data-id="'+b.code+'">رفض</button>'}
+if(dean)a+='<button class="btn s d" data-do="del" data-id="'+b.code+'">حذف نهائي</button>';
 return '<div class="card">'+bcard(b)+(b.st=="w"?'<div class="hint">المتبقي: '+cd(b)+'</div>':'')+pv(b)+(a?'<div class="act">'+a+'</div>':'')+(act(b)&&b.st!="ok"&&!ok2?'<div class="msg w">'+(b.proof?"افتح الإثبات المرفوع وراجعه أولاً لتفعيل زر الموافقة.":"لا يمكن الموافقة قبل رفع الإثبات.")+'</div>':'')+'</div>'}).join(""):'<div class="msg w">لا توجد حجوزات بهذه الحالة.</div>'}
 if(S.at=="rep"){
 var d0=S.rd||tom,st=new Date(d0+"T00:00"),en=new Date(st.getTime()+(S.rp=="day"?1:7)*864e5),s0=iso(st),e0=iso(en);
@@ -217,6 +218,8 @@ if(b.dataset.p){S.rp=b.dataset.p;adm()}
 if(b.dataset["do"]){var x=B.filter(function(k){return k.code==b.dataset.id})[0],a=b.dataset["do"];
 if(a=="v"){S.open=S.open==x.code?null:x.code;
 if(S.open&&x.proof&&x.proof.path){SB.storage.from("proofs").createSignedUrl(x.proof.path,600).then(function(u){x.proof.url=u.data&&u.data.signedUrl;x.proof.t=/\.pdf$/i.test(x.proof.name)?"application/pdf":"image/*";return SB.rpc("staff_view",{p_code:x.code})}).then(function(){x["v"+S.role]=true;adm()})}else adm();return}
+if(a=="del"){if(!confirm("حذف الحجز "+x.code+" نهائياً؟ لا يمكن التراجع."))return;
+(x.proof&&x.proof.path?SB.storage.from("proofs").remove([x.proof.path]):Promise.resolve()).then(function(){return SB.rpc("staff_delete",{p_code:x.code})}).then(function(r){if(r&&r.error)alert(r.error.message);if(S.open==x.code)S.open=null;rl()});return}
 SB.rpc("staff_decide",{p_code:x.code,p_action:a}).then(function(r){if(r.error)alert(r.error.message);rl()})}};
 SB.from("halls").select("*").order("id").then(function(r){
 if(!r.data||!r.data.length){$("halls").innerHTML='<div class="msg e">تعذر الاتصال بقاعدة البيانات. راجع إعدادات الربط.</div>';throw 0}
