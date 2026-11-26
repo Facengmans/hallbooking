@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>نظام حجز قاعات الكلية</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f4f7;--sf:#fff;--ink:#10213b;--mute:#5b6a82;--line:#d8dee8;--brand:#14407c;--bi:#fff;--gold:#b6842a;--ok:#e1f2e8;--oki:#1b6a3d;--bad:#f3dfdf;--badi:#98302f;--amb:#fff0d2;--ambi:#8a5a00;--hero:#0f2c52;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1526;--sf:#16213a;--ink:#e8edf6;--mute:#9aa8c0;--line:#2a3855;--brand:#6fa3ee;--bi:#0d1526;--gold:#e0b25a;--ok:#173a2a;--oki:#7fd6a3;--bad:#3d2024;--badi:#f0a0a0;--amb:#3b2e10;--ambi:#f0c777;--hero:#0a1a33}}
+:root[data-theme="dark"]{--bg:#0d1526;--sf:#16213a;--ink:#e8edf6;--mute:#9aa8c0;--line:#2a3855;--brand:#6fa3ee;--bi:#0d1526;--gold:#e0b25a;--ok:#173a2a;--oki:#7fd6a3;--bad:#3d2024;--badi:#f0a0a0;--amb:#3b2e10;--ambi:#f0c777;--hero:#0a1a33}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Tajawal,Tahoma,Arial,sans-serif;line-height:1.6}
+header{background:var(--hero);color:#fff;padding:18px 16px 0}
+.in{max-width:820px;margin:0 auto}
+header h1{margin:0;font-size:1.45rem;font-weight:800}
+header p{margin:2px 0 12px;color:#b9c8e0;font-size:.9rem}
+.tabs{display:flex;gap:4px;overflow-x:auto}
+.tabs button{flex:1;min-width:92px;padding:10px 8px;border:0;border-radius:10px 10px 0 0;background:transparent;color:#b9c8e0;font:inherit;font-weight:700;cursor:pointer}
+.tabs button.on{background:var(--bg);color:var(--ink)}
+main{max-width:820px;margin:0 auto;padding:14px 16px 30px}
+section,.card{background:var(--sf);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+h2{font-size:1.05rem;margin:0 0 10px}
+h3{font-size:.95rem;margin:12px 0 6px}
+.halls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hall{border:2px solid var(--line);background:var(--sf);color:var(--ink);border-radius:10px;padding:10px;font:inherit;text-align:right;cursor:pointer;font-weight:700}
+.hall small{display:block;color:var(--mute);font-weight:500}
+.hall.on{border-color:var(--brand);background:var(--bg)}
+label{display:block;font-weight:700;margin:10px 0 4px;font-size:.9rem}
+select,input[type=text],input[type=tel],input[type=date],input[type=password],input[type=number]{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.day{margin-top:6px;font-weight:800;color:var(--brand)}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.slot{padding:8px 2px;border-radius:8px;border:0;font:inherit;font-size:.85rem;cursor:pointer;background:var(--ok);color:var(--oki)}
+.slot.busy{background:var(--bad);color:var(--badi);cursor:not-allowed;text-decoration:line-through}
+.slot.sel{background:var(--brand);color:var(--bi);font-weight:700}
+.hint{color:var(--mute);font-size:.82rem;margin-top:6px}
+.row{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.tot{font-size:1.25rem;font-weight:800;color:var(--gold)}
+.tot.fr{color:var(--oki)}
+.btn{width:100%;margin-top:12px;padding:12px;border:0;border-radius:10px;background:var(--brand);color:var(--bi);font:inherit;font-weight:800;font-size:1rem;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.s{width:auto;margin:0;padding:7px 12px;font-size:.85rem}
+.btn.g{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.btn.d{background:var(--badi);color:#fff}
+.msg{margin-top:10px;padding:10px;border-radius:8px;font-size:.9rem}
+.msg.e{background:var(--bad);color:var(--badi)}
+.msg.o{background:var(--ok);color:var(--oki)}
+.msg.w{background:var(--amb);color:var(--ambi)}
+.code{font-size:2rem;font-weight:800;letter-spacing:3px;text-align:center;direction:ltr;color:var(--brand);padding:10px;border:2px dashed var(--brand);border-radius:12px;margin:10px 0}
+.bd{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:var(--bg);border:1px solid var(--line)}
+.bd.w,.bd.c{background:var(--amb);color:var(--ambi);border-color:transparent}
+.bd.ok{background:var(--ok);color:var(--oki);border-color:transparent}
+.bd.x,.bd.e{background:var(--bad);color:var(--badi);border-color:transparent}
+.tl{list-style:none;margin:10px 0;padding:0}
+.tl li{position:relative;padding:4px 30px 4px 0;color:var(--mute)}
+.tl li:before{content:"";position:absolute;right:4px;top:11px;width:14px;height:14px;border-radius:50%;border:2px solid var(--line);background:var(--sf)}
+.tl li.dn{color:var(--ink);font-weight:700}
+.tl li.dn:before{background:var(--oki);border-color:var(--oki)}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.kp div{background:var(--bg);border-radius:10px;padding:10px;text-align:center}
+.kp b{display:block;font-size:1.25rem}.kp span{font-size:.78rem;color:var(--mute)}
+.bar{height:10px;border-radius:5px;background:var(--brand);margin-top:3px}
+.sub{display:flex;gap:6px;margin-bottom:12px}
+.sub button{flex:1;padding:8px;border:1px solid var(--line);background:var(--sf);color:var(--ink);border-radius:8px;font:inherit;font-weight:700;cursor:pointer}
+.sub button.on{background:var(--brand);color:var(--bi);border-color:var(--brand)}
+.act{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+img.pf{max-width:140px;border-radius:8px;border:1px solid var(--line);margin-top:6px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.hide{display:none}
+ol,ul{padding-right:20px;margin:6px 0}
+@media print{header,.sub,.btn,.tabs{display:none}}
+</style>
+</head>
+<body>
+<header><div class="in"><h1>نظام حجز قاعات الكلية</h1><p>احجز، تابع حالة حجزك بالكود، وارفع الإثبات من أي جهاز</p>
+<div class="tabs" id="tabs"></div></div></header>
+<main>
+<div id="v-book">
+<div id="form">
+<section><h2>1. اختر صفتك</h2><select id="cat"></select>
+<div id="unitw" class="hide"><label for="unit">اسم الوحدة أو المركز أو القطاع</label><input type="text" id="unit"></div></section>
+<section><h2>2. اختر القاعة</h2><div class="halls" id="halls"></div></section>
+<section><h2>3. بيانات الحجز</h2>
+<label for="name">الاسم</label><input type="text" id="name">
+<label for="phone">رقم الموبايل</label><input type="tel" id="phone" dir="ltr">
+<label for="date">تاريخ الحجز</label><input type="date" id="date"><div class="day" id="day"></div></section>
+<section><h2>4. اختر الوقت</h2><div class="slots" id="slots"></div><div class="hint" id="mh"></div></section>
+<section><h2>الملخص</h2><div id="sum"></div><button class="btn" id="go">تأكيد طلب الحجز</button><div id="msg"></div></section>
+</div>
+<div id="done" class="hide"></div>
+</div>
+
+<div id="v-track" class="hide"><section><h2>متابعة حجزك</h2><label for="tc">أدخل كود الحجز</label><input type="text" id="tc" dir="ltr" placeholder="RB-XXXXX"><button class="btn" id="tgo">عرض حالة الحجز</button></section><div id="tres"></div></div>
+
+<div id="v-admin" class="hide"></div>
+<div id="v-help" class="hide"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+var $=function(i){return document.getElementById(i)};
+var SB=supabase.createClient("https://byychqetbqmrrmibzryz.supabase.co","sb_publishable_CQphCM2I1w9_ABPaWkQiZw_Xl_2Mtg8");
+var HALLS=[];
+var CATS=[["عضو هيئة تدريس",1],["عضو الهيئة المعاونة",1],["أسرة طلابية",1],["قسم أو برنامج علمي (مناقشات مشاريع التخرج أو أعمال مماثلة)",1],["إدارة الكلية أو وحداتها أو مراكزها",1],["طالب دراسات عليا",0],["جهة خارجية",0],["أخرى",0]];
+var ST={w:"بانتظار رفع الإثبات",r:"قيد مراجعة مركز الخدمات",c:"بانتظار اعتماد العميد",ok:"الحجز مؤكد",x:"مرفوض",e:"ملغي لانتهاء مهلة 48 ساعة"};
+var ROLE={dean:"عميد الكلية",center:"مسؤول مركز الخدمات الفنية والمعملية"};
+var S={maxH:12,price:[],role:null,tab:"book",at:"list",flt:"all",rp:"day"};
+var HR=3600000,H0=8,H1=20,B=[],BZ={},bk={h:0,a:null,b:null};
+function iso(d){var m=d.getMonth()+1,x=d.getDate();return d.getFullYear()+"-"+(m<10?"0":"")+m+"-"+(x<10?"0":"")+x}
+function f(h){var x=h%12||12;return x+(h>=12?" م":" ص")}
+function dn(d){return new Date(d+"T00:00").toLocaleDateString("ar-EG",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+var today=new Date(),tom=iso(new Date(Date.now()+864e5));
+function paid(c){return !CATS[c][1]}
+function act(b){return b.st=="w"||b.st=="r"||b.st=="c"||b.st=="ok"}
+function M(r){var b={code:r.code,h:r.hall_id-1,d:r.day,s:r.start_h,e:r.end_h,name:r.name,phone:r.phone,cat:r.cat,unit:r.unit||"",amt:r.amount,st:r.status,dl:new Date(r.deadline).getTime(),cOk:r.center_ok,vdean:r.viewed_dean,vcenter:r.viewed_center,created:new Date(r.created_at||r.deadline).getTime(),proof:r.proof_name?{name:r.proof_name,path:r.proof_path}:null};if(b.st=="w"&&Date.now()>b.dl)b.st="e";return b}
+function busy(h,d,i){return(BZ[h+"|"+d]||[]).some(function(x){return i>=x.start_h&&i<x.end_h})}
+function ld(){var d=$("date").value;if(!d)return dr();return SB.rpc("busy_slots",{p_hall:bk.h+1,p_day:d}).then(function(r){BZ[bk.h+"|"+d]=r.data||[];dr()})}
+$("cat").innerHTML='<optgroup label="فئات مجانية">'+CATS.slice(0,5).map(function(c,i){return '<option value="'+i+'">'+c[0]+'</option>'}).join("")+'</optgroup><optgroup label="فئات برسوم">'+CATS.slice(5).map(function(c,i){return '<option value="'+(i+5)+'">'+c[0]+'</option>'}).join("")+'</optgroup>';
+$("date").value=tom;$("date").min=iso(today);
+function rng(){if(bk.a==null)return null;var e=bk.b==null?bk.a:bk.b;return[Math.min(bk.a,e),Math.max(bk.a,e)+1]}
+function cf(r){for(var i=r[0];i<r[1];i++)if(busy(bk.h,$("date").value,i))return 1;return 0}
+function msg(t,k){$("msg").innerHTML=t?'<div class="msg '+k+'">'+t+'</div>':""}
+function dr(){
+var c=+$("cat").value,d=$("date").value,r=rng(),p=paid(c);
+$("halls").innerHTML=HALLS.map(function(n,i){return '<button class="hall'+(i==bk.h?' on':'')+'" data-i="'+i+'">'+n+'<small>'+(p?S.price[i]+' ج.م للحجز':'مجاني لفئتك')+'</small></button>'}).join("");
+var h="";for(var i=H0;i<H1;i++){var b=busy(bk.h,d,i),s=r&&i>=r[0]&&i<r[1];h+='<button class="slot'+(b?' busy':'')+(s?' sel':'')+'" data-i="'+i+'"'+(b?' disabled':'')+'>'+f(i)+'</button>'}
+$("slots").innerHTML=h;$("day").textContent=d?"اليوم: "+dn(d):"";
+$("unitw").className=c==4?"":"hide";
+$("mh").textContent="أقصى مدة للحجز: "+S.maxH+" ساعة. اضغط على بداية الفترة ثم نهايتها.";
+var hrs=r?r[1]-r[0]:0,amt=p?S.price[bk.h]:0;
+$("sum").innerHTML='<div class="row"><span>القاعة</span><b>'+HALLS[bk.h]+'</b></div><div class="row"><span>الموعد</span><b>'+(hrs?f(r[0])+" إلى "+f(r[1])+" ("+hrs+" ساعة)":"لم يُحدد")+'</b></div><div class="row"><span>الرسوم</span><span class="tot'+(amt?'':' fr')+'">'+(amt?amt+" ج.م":"مجاني")+'</span></div><div class="hint">'+(p?"الرسوم ثابتة بسعر القاعة مهما كان عدد الساعات. بعد الحجز تتوجه لمركز الخدمات الفنية والمعملية لسداد الرسوم وترفع الإيصال خلال 48 ساعة.":"بعد الحجز ترفع ما يثبت صفتك خلال 48 ساعة.")+'</div>'}
+$("halls").onclick=function(e){var b=e.target.closest(".hall");if(b){bk.h=+b.dataset.i;bk.a=bk.b=null;msg("");ld()}};
+$("slots").onclick=function(e){var b=e.target.closest(".slot");if(!b||b.disabled)return;var i=+b.dataset.i;msg("");
+if(bk.a==null||bk.b!=null){bk.a=i;bk.b=null}else{bk.b=i;var r=rng();if(r[1]-r[0]>S.maxH){msg("أقصى مدة للحجز "+S.maxH+" ساعة.","e");bk.a=i;bk.b=null}else if(cf(r)){msg("الفترة تتعارض مع حجز قائم.","e");bk.a=i;bk.b=null}}dr()};
+$("cat").onchange=function(){msg("");dr()};
+$("date").onchange=function(){bk.a=bk.b=null;msg("");ld()};
+$("go").onclick=function(){
+var r=rng(),c=+$("cat").value;
+if(!r)return msg("اختر وقت الحجز.","e");
+if(!$("name").value.trim()||!$("phone").value.trim())return msg("اكتب الاسم ورقم الموبايل.","e");
+if(c==4&&!$("unit").value.trim())return msg("اكتب اسم الوحدة أو المركز أو القطاع.","e");
+if(!$("date").value)return msg("اختر التاريخ.","e");
+if(cf(r))return msg("الفترة تتعارض مع حجز قائم.","e");
+$("go").disabled=true;
+SB.rpc("create_booking",{p_hall:bk.h+1,p_day:$("date").value,p_s:r[0],p_e:r[1],p_name:$("name").value.trim(),p_phone:$("phone").value.trim(),p_cat:c,p_unit:$("unit").value.trim()}).then(function(x){
+$("go").disabled=false;
+if(x.error){msg(x.error.code=="23P01"?"الفترة اتحجزت قبل ما تأكد، اختر وقتاً آخر.":"تعذر تسجيل الحجز: "+x.error.message,"e");return ld()}
+var b={code:x.data.code,amt:x.data.amount};
+$("form").className="hide";$("done").className="";
+$("done").innerHTML='<section><h2>تم تسجيل طلب الحجز</h2><p>احتفظ بهذا الكود لمتابعة حجزك ورفع الإثبات:</p><div class="code">'+b.code+'</div><div class="msg w">'+(b.amt?'توجه لمركز الخدمات الفنية والمعملية لسداد '+b.amt+' ج.م، ثم ارفع إيصال الدفع بالكود خلال 48 ساعة، وإلا يُلغى الحجز.':'ارفع ما يثبت صفتك بالكود خلال 48 ساعة، وإلا يُلغى الحجز.')+'</div><button class="btn" id="d1">رفع الإثبات ومتابعة الحالة</button><button class="btn g" id="d2">حجز جديد</button></section>';
+$("d1").onclick=function(){$("tc").value=b.code;tab("track");showT()};
+$("d2").onclick=function(){bk.a=bk.b=null;$("form").className="";$("done").className="hide";msg("");ld()}})};
+function cd(b){var m=Math.max(0,Math.floor((b.dl-Date.now())/60000));return Math.floor(m/60)+" ساعة و"+m%60+" دقيقة"}
+function bcard(b){
+var s='<div class="top"><b>'+b.code+'</b><span class="bd '+b.st+'">'+ST[b.st]+'</span></div>';
+s+='<div class="row"><span>القاعة</span><span>'+HALLS[b.h]+'</span></div><div class="row"><span>الموعد</span><span>'+dn(b.d)+"، "+f(b.s)+" إلى "+f(b.e)+'</span></div><div class="row"><span>الصفة</span><span>'+CATS[b.cat][0]+(b.unit?" - "+b.unit:"")+'</span></div><div class="row"><span>الحاجز</span><span>'+b.name+" - "+b.phone+'</span></div><div class="row"><span>الرسوم</span><b>'+(b.amt?b.amt+" ج.م":"مجاني")+'</b></div>';
+if(b.proof)s+='<div class="hint">الإثبات المرفوع: '+b.proof.name+'</div>';
+return s}
+function pv(b){if(S.open!=b.code||!b.proof||!b.proof.url)return"";var p=b.proof,t=p.t||"";return '<div class="card" style="background:var(--bg)"><b>'+(b.amt?"إيصال الدفع":"إثبات الصفة")+': '+p.name+'</b>'+(t.indexOf("image")==0?'<img src="'+p.url+'" alt="" style="width:100%;margin-top:8px;border-radius:8px">':'<iframe src="'+p.url+'" style="width:100%;height:420px;border:0;margin-top:8px"></iframe>')+'</div>'}
+function showT(){
+var c=$("tc").value.trim().toUpperCase();
+SB.rpc("get_booking",{p_code:c}).then(function(r){
+var b=r.data?M(r.data):null;
+if(!b){$("tres").innerHTML='<div class="msg e">لا يوجد حجز بهذا الكود، راجع الكود وحاول مرة أخرى.</div>';return}
+var s='<div class="card">'+bcard(b);
+if(b.st=="w")s+='<div class="msg w">المتبقي على رفع الإثبات: '+cd(b)+'</div>';
+var steps=[["تم تسجيل الحجز",1],["رفع "+(b.amt?"إيصال الدفع":"ما يثبت الصفة"),!!b.proof],["مراجعة مركز الخدمات",b.cOk||b.st=="ok"],["اعتماد العميد",b.st=="ok"]];
+s+='<ul class="tl">'+steps.map(function(t){return '<li class="'+(t[1]?'dn':'')+'">'+t[0]+'</li>'}).join("")+'</ul>';
+if(b.st=="w"||b.st=="r"||b.st=="c")s+='<label>'+(b.proof?"استبدال الإثبات":"ارفع "+(b.amt?"إيصال الدفع":"ما يثبت صفتك"))+' (صورة أو PDF، حتى 5 ميجا)</label><input type="file" id="fl" accept="image/*,.pdf">';
+if(b.st=="x")s+='<div class="msg e">تم رفض الحجز. يمكنك تقديم طلب جديد.</div>';
+if(b.st=="ok")s+='<div class="msg o">حجزك مؤكد. احضر في الموعد المحدد.</div>';
+$("tres").innerHTML=s+'</div>';
+if($("fl"))$("fl").onchange=function(){var fl=this.files[0];if(!fl)return;if(fl.size>5242880){$("tres").insertAdjacentHTML("beforeend",'<div class="msg e">حجم الملف أكبر من 5 ميجا.</div>');return}
+var path=b.code+"/"+Date.now()+"_"+fl.name.replace(/[^\w.]/g,"_");
+SB.storage.from("proofs").upload(path,fl).then(function(u){if(u.error){$("tres").insertAdjacentHTML("beforeend",'<div class="msg e">فشل رفع الملف، حاول مرة أخرى.</div>');return}
+return SB.rpc("attach_proof",{p_code:b.code,p_path:path,p_name:fl.name}).then(showT)})}})}
+$("tgo").onclick=showT;
+function mm(){$("v-help").innerHTML='<section><h2>تعليمات الحجز</h2><ol><li>اختر القاعة والتاريخ وحدد صفتك، ثم الوقت المناسب.</li><li>أقصى مدة للحجز الواحد '+S.maxH+' ساعة. رسوم الحجز ثابتة بسعر القاعة مهما كان عدد الساعات.</li><li>تحصل على كود حجز، احتفظ به لمتابعة حالتك ورفع الإثبات.</li><li>خلال 48 ساعة من الحجز لازم ترفع الإثبات، وإلا يُلغى الحجز تلقائياً.</li><li>يمر الحجز بمراجعة مسؤول مركز الخدمات ثم اعتماد العميد، ويحق للعميد الاعتماد مباشرة. وقبل أي موافقة يراجع المسؤول الإيصال أو إثبات الصفة المرفوع.</li></ol><h3>فئات الحجز المجاني</h3><p>عضو هيئة التدريس، عضو الهيئة المعاونة، الأسر الطلابية، الأقسام والبرامج العلمية (مناقشات مشاريع التخرج وما شابهها)، إدارة الكلية ووحداتها ومراكزها. المطلوب: ما يثبت الصفة.</p><h3>فئات الحجز برسوم</h3><p>طلاب الدراسات العليا، الجهات الخارجية، وأي جهة أخرى. السداد في مركز الخدمات الفنية والمعملية ثم رفع الإيصال.</p></section>'}
+function tab(t){S.tab=t;["book","track","admin","help"].forEach(function(k){$("v-"+k).className=k==t?"":"hide"});
+$("tabs").innerHTML=[["book","حجز قاعة"],["track","متابعة حجزي"],["admin","الإدارة"],["help","التعليمات"]].map(function(x){return '<button data-t="'+x[0]+'" class="'+(x[0]==t?'on':'')+'">'+x[1]+'</button>'}).join("");
+if(t=="admin")S.role?rl():adm();if(t=="help")mm();if(t=="book")ld()}
+$("tabs").onclick=function(e){var b=e.target.closest("button");if(b)tab(b.dataset.t)};
+function lr(uid){return SB.from("staff").select("role").eq("user_id",uid).maybeSingle().then(function(r){S.role=r.data?r.data.role:null})}
+function rl(){SB.rpc("sweep").then(function(){return SB.from("bookings").select("*").order("created_at",{ascending:false})}).then(function(r){B=(r.data||[]).map(M);adm()})}
+function adm(){
+var el=$("v-admin");
+if(!S.role){el.innerHTML='<section><h2>دخول الإدارة</h2><label>البريد الإلكتروني</label><input type="text" id="le2" dir="ltr"><label>كلمة المرور</label><input type="password" id="lp"><button class="btn" id="lg">دخول</button><div id="le"></div></section>';
+$("lg").onclick=function(){SB.auth.signInWithPassword({email:$("le2").value.trim(),password:$("lp").value}).then(function(r){if(r.error){$("le").innerHTML='<div class="msg e">البريد أو كلمة المرور غير صحيحة.</div>';return}
+return lr(r.data.user.id).then(function(){if(!S.role){SB.auth.signOut();$("le").innerHTML='<div class="msg e">هذا الحساب غير مصرح له بالإدارة.</div>'}else rl()})})};return}
+var dean=S.role=="dean",h='<div class="top" style="margin-bottom:10px"><b>'+ROLE[S.role]+'</b><button class="btn s g" id="lo">خروج</button></div><div class="sub"><button data-a="list" class="'+(S.at=="list"?'on':'')+'">الحجوزات</button><button data-a="rep" class="'+(S.at=="rep"?'on':'')+'">التقارير</button>'+(dean?'<button data-a="set" class="'+(S.at=="set"?'on':'')+'">الإعدادات</button>':'')+'</div>';
+if(S.at=="list"){
+var L=B.filter(function(b){return S.flt=="all"||b.st==S.flt});
+h+='<select id="fs" style="margin-bottom:10px"><option value="all">كل الحالات</option>'+Object.keys(ST).map(function(k){return '<option value="'+k+'"'+(S.flt==k?' selected':'')+'>'+ST[k]+'</option>'}).join("")+'</select>';
+h+=L.length?L.map(function(b){
+var a='',ok2=b.proof&&b["v"+S.role];
+if(act(b)&&b.st!="ok"){a+=(b.proof?'<button class="btn s g" data-do="v" data-id="'+b.code+'">'+(S.open==b.code?"إخفاء":"عرض")+" "+(b.amt?"إيصال الدفع":"إثبات الصفة")+'</button>':'');
+if(!dean&&b.st!="c")a+='<button class="btn s" data-do="c" data-id="'+b.code+'"'+(ok2?'':' disabled')+'>موافقة المركز</button>';
+if(dean)a+='<button class="btn s" data-do="ok" data-id="'+b.code+'"'+(ok2?'':' disabled')+'>اعتماد نهائي</button>';
+a+='<button class="btn s d" data-do="x" data-id="'+b.code+'">رفض</button>'}
+return '<div class="card">'+bcard(b)+(b.st=="w"?'<div class="hint">المتبقي: '+cd(b)+'</div>':'')+pv(b)+(a?'<div class="act">'+a+'</div>':'')+(act(b)&&b.st!="ok"&&!ok2?'<div class="msg w">'+(b.proof?"افتح الإثبات المرفوع وراجعه أولاً لتفعيل زر الموافقة.":"لا يمكن الموافقة قبل رفع الإثبات.")+'</div>':'')+'</div>'}).join(""):'<div class="msg w">لا توجد حجوزات بهذه الحالة.</div>'}
+if(S.at=="rep"){
+var d0=S.rd||tom,st=new Date(d0+"T00:00"),en=new Date(st.getTime()+(S.rp=="day"?1:7)*864e5),s0=iso(st),e0=iso(en);
+var R=B.filter(function(b){return b.d>=s0&&b.d<e0}),ok=R.filter(function(b){return b.st=="ok"});
+var rev=ok.reduce(function(a,b){return a+b.amt},0),mx=Math.max.apply(null,[1].concat(HALLS.map(function(_,i){return ok.filter(function(b){return b.h==i}).length})));
+h+='<section><h2>تقرير الحجوزات</h2><div class="sub"><button data-p="day" class="'+(S.rp=="day"?'on':'')+'">يومي</button><button data-p="week" class="'+(S.rp=="week"?'on':'')+'">أسبوعي</button></div><label>من تاريخ</label><input type="date" id="rd" value="'+d0+'"><div class="kp" style="margin-top:12px"><div><b>'+R.length+'</b><span>كل الطلبات</span></div><div><b>'+ok.length+'</b><span>مؤكدة</span></div><div><b>'+rev+'</b><span>إيراد مؤكد (ج.م)</span></div></div><div class="kp"><div><b>'+R.filter(function(b){return b.st=="w"||b.st=="r"||b.st=="c"}).length+'</b><span>قيد الإجراء</span></div><div><b>'+R.filter(function(b){return b.st=="x"||b.st=="e"}).length+'</b><span>مرفوضة أو ملغاة</span></div><div><b>'+ok.filter(function(b){return !b.amt}).length+'</b><span>مؤكدة مجانية</span></div></div><h3>الحجوزات المؤكدة حسب القاعة</h3>'+HALLS.map(function(n,i){var c=ok.filter(function(b){return b.h==i}).length;return '<div style="margin-bottom:8px"><div class="top"><span>'+n+'</span><b>'+c+'</b></div><div class="bar" style="width:'+(c/mx*100)+'%;min-width:4px"></div></div>'}).join("")+'<button class="btn g" onclick="window.print()">طباعة التقرير</button></section>'}
+if(S.at=="set"&&dean){
+h+='<section><h2>سعر الحجز لكل قاعة (ج.م، ثابت مهما كان عدد الساعات)</h2>'+HALLS.map(function(n,i){return '<label>'+n+'</label><input type="number" min="0" id="pr'+i+'" value="'+S.price[i]+'">'}).join("")+'<label>أقصى مدة للحجز (ساعات)</label><input type="number" min="1" max="12" id="mx" value="'+S.maxH+'"><button class="btn" id="sv">حفظ الإعدادات</button><div id="se"></div></section>'}
+el.innerHTML=h;
+$("lo").onclick=function(){SB.auth.signOut().then(function(){S.role=null;B=[];adm()})};
+if($("fs"))$("fs").onchange=function(){S.flt=this.value;adm()};
+if($("rd"))$("rd").onchange=function(){S.rd=this.value;adm()};
+if($("sv"))$("sv").onclick=function(){var ps=HALLS.map(function(_,i){return +$("pr"+i).value||0}),m2=Math.max(1,Math.min(12,+$("mx").value||12));
+Promise.all(ps.map(function(p,i){return SB.from("halls").update({price:p}).eq("id",i+1)}).concat([SB.from("settings").update({max_hours:m2}).eq("id",1)])).then(function(rs){var er=rs.some(function(x){return x.error});if(!er){S.price=ps;S.maxH=m2}$("se").innerHTML='<div class="msg '+(er?'e">تعذر الحفظ':'o">تم الحفظ وتظهر الأسعار فوراً لمن يحجز')+'.</div>'})}}
+$("v-admin").onclick=function(e){var b=e.target.closest("button");if(!b)return;
+if(b.dataset.a){S.at=b.dataset.a;adm()}
+if(b.dataset.p){S.rp=b.dataset.p;adm()}
+if(b.dataset["do"]){var x=B.filter(function(k){return k.code==b.dataset.id})[0],a=b.dataset["do"];
+if(a=="v"){S.open=S.open==x.code?null:x.code;
+if(S.open&&x.proof&&x.proof.path){SB.storage.from("proofs").createSignedUrl(x.proof.path,600).then(function(u){x.proof.url=u.data&&u.data.signedUrl;x.proof.t=/\.pdf$/i.test(x.proof.name)?"application/pdf":"image/*";return SB.rpc("staff_view",{p_code:x.code})}).then(function(){x["v"+S.role]=true;adm()})}else adm();return}
+SB.rpc("staff_decide",{p_code:x.code,p_action:a}).then(function(r){if(r.error)alert(r.error.message);rl()})}};
+SB.from("halls").select("*").order("id").then(function(r){
+if(!r.data||!r.data.length){$("halls").innerHTML='<div class="msg e">تعذر الاتصال بقاعدة البيانات. راجع إعدادات الربط.</div>';throw 0}
+r.data.forEach(function(x){HALLS.push(x.name);S.price.push(x.price)});
+return SB.from("settings").select("max_hours").single()}).then(function(r){S.maxH=r.data?r.data.max_hours:12;return SB.auth.getSession()}).then(function(r){return r.data.session?lr(r.data.session.user.id):0}).then(function(){tab("book")}).catch(function(){});
+</script>
+</body>
+</html>
